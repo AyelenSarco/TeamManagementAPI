@@ -1,0 +1,82 @@
+package com.crudconJPAyHibernate.jpaDemo.Controller;
+
+import com.crudconJPAyHibernate.jpaDemo.Dto.Contact.ContactBaseDTO;
+import com.crudconJPAyHibernate.jpaDemo.Dto.Contact.ContactMapper;
+import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MemberTeamMapper;
+import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MemberTeamViewDTO;
+import com.crudconJPAyHibernate.jpaDemo.Dto.Person.PersonBaseDTO;
+import com.crudconJPAyHibernate.jpaDemo.Dto.Person.PersonMapper;
+import com.crudconJPAyHibernate.jpaDemo.Dto.Person.PersonViewDTO;
+import com.crudconJPAyHibernate.jpaDemo.Dto.Person.PersonWithMembershipViewDTO;
+import com.crudconJPAyHibernate.jpaDemo.Model.Entity.MemberTeam;
+import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Person;
+import com.crudconJPAyHibernate.jpaDemo.Service.Contact.IContactService;
+import com.crudconJPAyHibernate.jpaDemo.Service.Person.IPersonService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+public class PersonController {
+
+    @Autowired
+    private IPersonService personService;
+    @Autowired
+    private IContactService contactService;
+
+    @Autowired
+    private PersonMapper personMapper;
+    @Autowired
+    private ContactMapper contactMapper;
+
+    @GetMapping("/people")
+    public List<PersonWithMembershipViewDTO> getPeople(){
+
+        return personService.getPeople().stream()
+                .map(PersonWithMembershipViewDTO::new).toList();
+
+    }
+
+    @GetMapping("/person/{id}")
+    public PersonWithMembershipViewDTO getPerson(@PathVariable Long id){
+        return personMapper.toPersonWithMembershipViewDTO(personService.getPerson(id));
+    }
+
+    @PostMapping("/person/create")
+    public PersonViewDTO createPerson(@Valid @RequestBody PersonBaseDTO personBaseDTO){
+
+        Person person = personService.createPerson(personMapper.toEntity(personBaseDTO));
+        return personMapper.toPersonWithMembershipViewDTO(person);
+    }
+
+    @DeleteMapping("/person/delete/{id}")
+    public String deletePerson(@PathVariable Long id){
+        personService.deletePerson(id);
+        return "Delete successful";
+    }
+
+    @PutMapping("/person/update/{id}")
+    public PersonViewDTO updatedPerson(@Valid @RequestBody PersonBaseDTO personBaseDTO,
+                                       @PathVariable Long id){
+
+
+        Person person = personService.updatePerson(id,personBaseDTO);
+        return personMapper.toPersonWithMembershipViewDTO(person);
+
+    }
+
+    @GetMapping("/person/{id}/teams")
+    public List<MemberTeamViewDTO>  getTeams(@PathVariable("id") Long personId){
+
+        List<MemberTeam> membershipList = personService.getTeams(personId);
+
+        return membershipList.stream().map(MemberTeamViewDTO::new).toList();
+
+    }
+
+
+
+
+}

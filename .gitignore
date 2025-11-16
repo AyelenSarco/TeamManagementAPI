@@ -1,0 +1,68 @@
+HELP.md
+
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+
+### sensitive data
+.env
+.env.*
+!.env.example
+!*.example.env
+
+src/main/resources/application.properties
+src/main/resources/application.yml
+src/main/resources/application.yaml
+!src/main/resources/application-example.properties
+
+## logs
+*.log
+logs/
+spring.log
+
+
+### Build / Dependencies
+target/
+build/
+.gradle/
+.gradle-cache/
+mvnw.cmd
+mvnw
+.mvn/wrapper/maven-wrapper.jar
+
+
+### Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Docker (for when I add it)
+docker-compose.override.yml
