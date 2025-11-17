@@ -41,3 +41,8 @@ It demonstrates solid backend practices such as:
 # Future improvements
 - Pagination and filters
 - Add Docker support
+
+# Postman collection
+- A Postman collection with all requests is included in the repository.
+- You can import it directly from: postman/TeamManagerAPI.postman_collection.json
+
