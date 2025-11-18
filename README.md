@@ -1,5 +1,5 @@
 # TeamManagementAPI
-A REST API built with Spring Boot, designed to manage teams, members, roles, and profiles.
+A REST API built with Spring Boot, designed to manage teams, people, memberships, and profiles.
 It demonstrates solid backend practices such as:
 
 - Layered architecture (Controller → Service → Repository → Entity)
@@ -15,7 +15,7 @@ It demonstrates solid backend practices such as:
 - For each membership, the role in the team, the join date, and whether it is active are stored.
 
 # Features
-- Create and manage Persons
+- Create and manage People
 - Create and manage Teams
 - Add or remove Team Members with roles
 - Manage team assignments 
