@@ -70,24 +70,24 @@ public class PersonService implements IPersonService {
 
     @Override
     public Person updatePerson(Long id, PersonBaseDTO p) {
-        Person person_db = getPerson(id);
+        Person dbPerson = getPerson(id);
         if (p.getAge()<0) { throw new BadRequestException("Age can not be negative"); }
 
-        if (p.getFirstName() != null) person_db.setFirstName(p.getFirstName());
+        if (p.getFirstName() != null) dbPerson.setFirstName(p.getFirstName());
         else throw new BadRequestException("First name is required");
 
-        if (p.getLastName() != null) person_db.setLastName(p.getLastName());
+        if (p.getLastName() != null) dbPerson.setLastName(p.getLastName());
         else throw new BadRequestException("Last name is required");
 
         if (p.getEmail() == null) { throw new BadRequestException("Email is required"); }
         else if (personRepository.findByEmail(p.getEmail()).isPresent()) { throw new BadRequestException("Email already exists"); }
-        else person_db.setEmail(p.getEmail());
+        else dbPerson.setEmail(p.getEmail());
 
-        person_db.setBirthDate(p.getBirthDate());
-        person_db.setAge(p.getAge());
-        person_db.setUpdatedAt(LocalDate.now());
+        dbPerson.setBirthDate(p.getBirthDate());
+        dbPerson.setAge(p.getAge());
+        dbPerson.setUpdatedAt(LocalDate.now());
 
-        return personRepository.save(person_db);
+        return personRepository.save(dbPerson);
     }
 
     public List<MemberTeam> getTeams( Long personId){

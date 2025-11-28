@@ -40,25 +40,25 @@ public class ProfileService implements IProfileService {
 
     @Override
     public Profile updateProfile(Profile profile) {
-        Profile db_profile = getProfile(profile.getPerson().getId());
+        Profile dbProfile = getProfile(profile.getPerson().getId());
 
         if(profile.getAvatarUrl() != null) {
-            db_profile.setAvatarUrl(profile.getAvatarUrl());
+            dbProfile.setAvatarUrl(profile.getAvatarUrl());
         }
         if(profile.getBiography() != null) {
-            db_profile.setBiography(profile.getBiography());
+            dbProfile.setBiography(profile.getBiography());
         }
         if(profile.getGender() != null) {
-            db_profile.setGender(profile.getGender());
+            dbProfile.setGender(profile.getGender());
         }
         if(profile.getNationality() != null) {
-            db_profile.setNationality(profile.getNationality());
+            dbProfile.setNationality(profile.getNationality());
         }
         if(profile.getLinkedinUrl() != null) {
-            db_profile.setLinkedinUrl(profile.getLinkedinUrl());
+            dbProfile.setLinkedinUrl(profile.getLinkedinUrl());
         }
 
-        return profileRepository.save(db_profile);
+        return profileRepository.save(dbProfile);
     }
 
 

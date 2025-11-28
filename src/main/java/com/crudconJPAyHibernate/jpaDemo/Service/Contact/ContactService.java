@@ -51,24 +51,24 @@ public class ContactService implements IContactService {
 
     @Override
     public Contact updateContact(Contact contact, Long contactId) {
-        Contact db_contact = this.getContact(contactId);
+        Contact dbContact = this.getContact(contactId);
 
         if (contact.isMajor() && primaryContactExists(contact.getPerson().getId())) {
             throw new ConflictException("A primary contact already exists");
         }
 
 
-        db_contact.setMajor(contact.isMajor());
+        dbContact.setMajor(contact.isMajor());
         if (contact.getContactType() != null) {
-            db_contact.setContactType(contact.getContactType());
+            dbContact.setContactType(contact.getContactType());
         }
         if (contact.getNotes() != null) {
-            db_contact.setNotes(contact.getNotes());
+            dbContact.setNotes(contact.getNotes());
         }
         if (contact.getValue() != null) {
-            db_contact.setValue(contact.getValue());
+            dbContact.setValue(contact.getValue());
         }
-        return contactRepository.save(db_contact);
+        return contactRepository.save(dbContact);
 
     }
 

@@ -77,9 +77,9 @@ public class TeamService implements ITeamService {
     @Override
     public MemberTeam updateMembership(Long id, String rolInTeam, boolean active) {
 
-        MemberTeam membership_db = memberTeamRepository.findById(id).orElseThrow(() -> new BadRequestException("Membership does not exist"));
-        membership_db.setActive(active);
-        membership_db.setRolInTeam(rolInTeam);
-        return memberTeamRepository.save(membership_db);
+        MemberTeam dbMembership = memberTeamRepository.findById(id).orElseThrow(() -> new BadRequestException("Membership does not exist"));
+        dbMembership.setActive(active);
+        dbMembership.setRolInTeam(rolInTeam);
+        return memberTeamRepository.save(dbMembership);
     }
 }
