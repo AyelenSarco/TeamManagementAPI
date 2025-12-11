@@ -13,18 +13,18 @@ import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Person;
 import com.crudconJPAyHibernate.jpaDemo.Service.Contact.IContactService;
 import com.crudconJPAyHibernate.jpaDemo.Service.Person.IPersonService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 public class PersonController {
 
-    @Autowired
-    private IPersonService personService;
-    @Autowired
-    private IContactService contactService;
+
+    private final IPersonService personService;
 
     @Autowired
     private PersonMapper personMapper;
