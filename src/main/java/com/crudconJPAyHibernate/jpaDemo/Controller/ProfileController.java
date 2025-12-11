@@ -7,16 +7,18 @@ import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Profile;
 import com.crudconJPAyHibernate.jpaDemo.Service.Profile.IProfileService;
 import com.crudconJPAyHibernate.jpaDemo.Service.Profile.ProfileService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@RequiredArgsConstructor
 @RestController
 public class ProfileController {
 
-    @Autowired
-    private IProfileService profileService;
+
+    private final IProfileService profileService;
 
     @Autowired
     private ProfileMapper profileMapper;

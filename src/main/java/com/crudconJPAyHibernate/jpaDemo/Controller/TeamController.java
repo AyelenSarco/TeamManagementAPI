@@ -10,6 +10,7 @@ import com.crudconJPAyHibernate.jpaDemo.Model.Entity.MemberTeam;
 import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Team;
 import com.crudconJPAyHibernate.jpaDemo.Service.Team.TeamService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +18,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 public class TeamController {
 
-    @Autowired
-    private TeamService teamService;
+    private final TeamService teamService;
 
     @Autowired
     private TeamMapper teamMapper;

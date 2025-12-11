@@ -8,6 +8,7 @@ import com.crudconJPAyHibernate.jpaDemo.Model.Entity.MemberTeam;
 import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Person;
 import com.crudconJPAyHibernate.jpaDemo.Repository.IMemberTeamRepository;
 import com.crudconJPAyHibernate.jpaDemo.Repository.IPersonRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +16,13 @@ import java.io.Console;
 import java.time.LocalDate;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class PersonService implements IPersonService {
 
-    @Autowired
-    private IPersonRepository personRepository;
 
-    @Autowired
-    private IMemberTeamRepository memberTeamRepository;
+    private final IPersonRepository personRepository;
+    private final IMemberTeamRepository memberTeamRepository;
 
     @Override
     public List<Person> getPeople() {

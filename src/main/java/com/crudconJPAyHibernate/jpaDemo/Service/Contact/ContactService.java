@@ -7,18 +7,19 @@ import com.crudconJPAyHibernate.jpaDemo.Exceptions.NotFoundException;
 import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Contact;
 import com.crudconJPAyHibernate.jpaDemo.Repository.IContactRepository;
 import com.crudconJPAyHibernate.jpaDemo.Repository.IPersonRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class ContactService implements IContactService {
 
-    @Autowired
-    private IContactRepository contactRepository;
-    @Autowired
-    private IPersonRepository personRepository;
+
+    private final IContactRepository contactRepository;
+    private final IPersonRepository personRepository;
 
     @Override
     public List<Contact> findAllByPersonId(Long person_id) {

@@ -6,18 +6,20 @@ import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Person;
 import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Profile;
 import com.crudconJPAyHibernate.jpaDemo.Repository.IPersonRepository;
 import com.crudconJPAyHibernate.jpaDemo.Repository.IProfileRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
+@RequiredArgsConstructor
 @Service
 public class ProfileService implements IProfileService {
-    @Autowired
-    private IProfileRepository profileRepository;
-    @Autowired
-    private IPersonRepository personRepository;
+
+    private final IProfileRepository profileRepository;
+
+    private final IPersonRepository personRepository;
 
     @Override
     public Profile getProfile(Long personId) {
