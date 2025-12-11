@@ -5,6 +5,7 @@ import com.crudconJPAyHibernate.jpaDemo.Model.Entity.MemberTeam;
 import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Team;
 import com.crudconJPAyHibernate.jpaDemo.Repository.IMemberTeamRepository;
 import com.crudconJPAyHibernate.jpaDemo.Repository.ITeamRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +13,13 @@ import java.lang.reflect.Member;
 import java.time.LocalDate;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class TeamService implements ITeamService {
-    @Autowired
-    private ITeamRepository teamRepository;
-    @Autowired
-    private IMemberTeamRepository memberTeamRepository;
+
+    private final ITeamRepository teamRepository;
+
+    private final IMemberTeamRepository memberTeamRepository;
     @Override
     public Team createTeam(Team team) {
         if (team.getName() == null) { throw new BadRequestException("Team name is required");}
