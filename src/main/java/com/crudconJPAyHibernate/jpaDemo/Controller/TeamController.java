@@ -83,9 +83,6 @@ public class TeamController {
                                                    @RequestBody MemberTeamBaseDTO mtDTO) {
 
         MemberTeam membership = teamService.updateMembership(membershipId, mtDTO.getRolInTeam(), mtDTO.isActive());
-        if (membership == null){
-            return ResponseEntity.ok("Membership update failed");
-        }
         return ResponseEntity.ok("Membership updated successful");
 
     }

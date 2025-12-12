@@ -14,7 +14,9 @@ import com.crudconJPAyHibernate.jpaDemo.Service.Contact.IContactService;
 import com.crudconJPAyHibernate.jpaDemo.Service.Person.IPersonService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,9 +54,12 @@ public class PersonController {
     }
 
     @DeleteMapping("/person/delete/{id}")
-    public String deletePerson(@PathVariable Long id){
+    public ResponseEntity<String> deletePerson(@PathVariable Long id){
         personService.deletePerson(id);
-        return "Delete successful";
+        if (personService.existsById(id) ){
+            return ResponseEntity.ok("Person deletion failed");
+        }
+        return ResponseEntity.ok("Delete person successfully");
     }
 
     @PutMapping("/person/update/{id}")

@@ -42,11 +42,12 @@ public class ContactController {
                                        @PathVariable("contactId") Long contactId){
 
         contactService.deleteContact(contactId);
-        if (! contactService.contactExists(contactId)) {
-            return ResponseEntity.ok("Delete contact successfully");
-        } else {
+        if ( contactService.contactExists(contactId)) {
             return ResponseEntity.ok("Contact deletion failed");
         }
+
+        return ResponseEntity.ok("Delete contact successfully");
+
     }
 
     @PutMapping("/person/{personId}/contacts/{contactId}")
