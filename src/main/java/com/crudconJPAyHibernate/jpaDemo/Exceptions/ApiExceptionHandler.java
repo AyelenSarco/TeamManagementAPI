@@ -1,66 +1,69 @@
 package com.crudconJPAyHibernate.jpaDemo.Exceptions;
 
+import com.crudconJPAyHibernate.jpaDemo.Dto.Response.ApiResponse;
+import jakarta.annotation.PostConstruct;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @ControllerAdvice
 public class ApiExceptionHandler {
 
+
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<Object> handleBadRequestException(BadRequestException ex) {
+    public ResponseEntity<ApiResponse<Object>> handleBadRequestException(BadRequestException ex) {
 
-        CustomizedException customException = new CustomizedException(ex.getMessage(),
-                                                                        HttpStatus.BAD_REQUEST,
-                                                                        ZonedDateTime.now(ZoneId.of("Z")));
+        ApiError error = new ApiError(ex.getMessage(), "BAD_REQUEST");
 
-        return new ResponseEntity<>(customException, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(ApiResponse.failure("Bad Request", List.of(error)));
     }
 
-    // NO SERIA NECESARIO... LO PODEMOS HACER CON EL ANTERIOR
+
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<Object> handleConflictException(ConflictException ex) {
 
-        CustomizedException customException = new CustomizedException(ex.getMessage(),
-                HttpStatus.BAD_REQUEST,
-                ZonedDateTime.now(ZoneId.of("Z")));
+        ApiError error = new ApiError(ex.getMessage(), "CONFLICT");
 
-        return new ResponseEntity<>(customException, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.failure("Conflict", List.of(error)));
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Object> handleNotFoundException(NotFoundException ex) {
-        CustomizedException customException = new CustomizedException( ex.getMessage(),
-                                                                        HttpStatus.NOT_FOUND,
-                                                                        ZonedDateTime.now(ZoneId.of("Z")));
-        return new ResponseEntity<>(customException, HttpStatus.NOT_FOUND);
+
+        ApiError error = new ApiError(ex.getMessage(), "NOT_FOUND");
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.failure("Resource Not Found", List.of(error)));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGeneral(Exception ex) {
-        CustomizedException customException = new CustomizedException( "Internal Server Error",
-                                                                        HttpStatus.INTERNAL_SERVER_ERROR,
-                                                                            ZonedDateTime.now(ZoneId.of("Z")));
+        ApiError error = new ApiError( "Internal Server Error", "INTERNAL_SERVER_ERROR");
 
-        return new ResponseEntity<>(customException, HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.failure("Internal Server Error", List.of(error)));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
+        List<ApiError> errors = new ArrayList<>();
 
         ex.getBindingResult().getFieldErrors().forEach((fieldError) -> {
-            errors.put(fieldError.getField(), fieldError.getDefaultMessage());
+            errors.add(new ApiError(
+                    fieldError.getField(), "BAD_REQUEST"));
         });
 
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.failure("Bad Request", errors));
     }
 
 

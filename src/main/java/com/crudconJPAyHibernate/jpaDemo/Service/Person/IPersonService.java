@@ -16,4 +16,6 @@ public interface IPersonService {
     public void deletePerson(Long id);
     public Person updatePerson(Long id, PersonBaseDTO personDTO);
     public List<MemberTeam> getTeams(Long personId);
+    public boolean existsById(Long id);
+
 }

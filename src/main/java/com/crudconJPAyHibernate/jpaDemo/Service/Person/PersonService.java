@@ -100,4 +100,10 @@ public class PersonService implements IPersonService {
 
         return membershipsList;
     }
+
+    public boolean existsById(Long id){
+        return personRepository.existsById(id);
+    }
+
+
 }

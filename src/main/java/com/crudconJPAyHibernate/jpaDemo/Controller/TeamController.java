@@ -3,6 +3,7 @@ package com.crudconJPAyHibernate.jpaDemo.Controller;
 
 import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MemberTeamBaseDTO;
 import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MemberTeamMapper;
+import com.crudconJPAyHibernate.jpaDemo.Dto.Response.ApiResponse;
 import com.crudconJPAyHibernate.jpaDemo.Dto.Team.TeamBaseDTO;
 import com.crudconJPAyHibernate.jpaDemo.Dto.Team.TeamMapper;
 import com.crudconJPAyHibernate.jpaDemo.Dto.Team.TeamViewDTO;
@@ -13,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,62 +34,80 @@ public class TeamController {
 
 
     @PostMapping("/team/create")
-    public TeamViewDTO createTeam(@Valid @RequestBody TeamBaseDTO teamDTO) {
+    public ResponseEntity<Object> createTeam(@Valid @RequestBody TeamBaseDTO teamDTO) {
         Team team = teamMapper.toEntity(teamDTO);
-        return teamMapper.toDTO(teamService.createTeam(team));
+        TeamViewDTO teamViewDTO = teamMapper.toDTO(teamService.createTeam(team));
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("Team created successfully",teamViewDTO));
 
     }
 
     @GetMapping("/teams")
-    public List<TeamViewDTO> getAllTeams() {
-        return teamService.findAll().stream().map(TeamViewDTO::new).toList();
+    public ResponseEntity<Object> getAllTeams() {
+
+        List<TeamViewDTO> teamsDTOS = teamService.findAll().stream().map(TeamViewDTO::new).toList();
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("Teams",teamsDTOS));
     }
 
     @GetMapping("/team/{id}")
-    public TeamViewDTO getTeam(@PathVariable Long id) {
+    public ResponseEntity<Object> getTeam(@PathVariable Long id) {
 
-        return  teamMapper.toDTO(teamService.getTeam(id));
+        TeamViewDTO teamDTO =  teamMapper.toDTO(teamService.getTeam(id));
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("Team",teamDTO));
     }
 
     @DeleteMapping("/team/{id}/delete")
-    public ResponseEntity<String> deleteTeam(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteTeam(@PathVariable Long id) {
         teamService.deleteTeam(id);
         if(teamService.existsTeam(id)){
-            return  ResponseEntity.ok("Team deletion failed");
+            return  ResponseEntity.status(HttpStatus.OK)
+                            .body(ApiResponse.success("Team deletion failed",null));
+
         }
-        return ResponseEntity.ok("Team deletion successful");
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("Team deleted successfully",null));
+
     }
 
     @PutMapping("/teams/{id}/update")
-    public TeamViewDTO updateTeam(@PathVariable Long id,
+    public ResponseEntity<Object> updateTeam(@PathVariable Long id,
                                   @Valid @RequestBody TeamBaseDTO teamDTO) {
 
         Team team = teamMapper.toEntity(teamDTO);
 
-        return teamMapper.toDTO(team);
+        TeamViewDTO updatedTeamDTO = teamMapper.toDTO(teamService.updateTeam(team,id));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("Team updated successfully",updatedTeamDTO));
     }
 
 
     @PostMapping("teams/{teamId}/members/add/{memberId}")
-    public TeamViewDTO addMemberToTeam(@PathVariable("teamId") Long teamId,
+    public ResponseEntity<Object> addMemberToTeam(@PathVariable("teamId") Long teamId,
                                        @PathVariable("memberId") long memberId,
                                        @Valid @RequestBody MemberTeamBaseDTO memberTeamDTO) {
         MemberTeam mt = memberTeamMapper.toEntity(memberTeamDTO,memberId, teamId);
         teamService.addMemberToTeam(mt);
 
-        return teamMapper.toDTO(teamService.getTeam(teamId));
+        TeamViewDTO teamDTO = teamMapper.toDTO(teamService.getTeam(teamId));
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("Member added successfully to the team",teamDTO));
     }
 
     @PatchMapping("/teams/membership/{id}/update")
-    public ResponseEntity<String> updateMembership(@PathVariable("id") Long membershipId,
+    public ResponseEntity<Object> updateMembership(@PathVariable("id") Long membershipId,
                                                    @RequestBody MemberTeamBaseDTO mtDTO) {
 
         MemberTeam membership = teamService.updateMembership(membershipId, mtDTO.getRolInTeam(), mtDTO.isActive());
-        if (membership == null){
-            return ResponseEntity.ok("Membership update failed");
-        }
-        return ResponseEntity.ok("Membership updated successful");
 
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("Membership updated successful",null));
     }
 
 

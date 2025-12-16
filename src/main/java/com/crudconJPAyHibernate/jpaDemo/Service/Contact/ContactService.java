@@ -52,7 +52,12 @@ public class ContactService implements IContactService {
 
     @Override
     public Contact updateContact(Contact contact, Long contactId) {
-        Contact dbContact = this.getContact(contactId);
+        //Contact dbContact = this.getContact(contactId);
+
+        Contact dbContact = contactRepository.findAllByPersonId(contact.getPerson().getId())
+                .stream()
+                .filter(c -> c.getId().equals(contactId)).findFirst()
+                .orElseThrow(() -> new NotFoundException("Contact not found"));
 
         if (contact.isMajor() && primaryContactExists(contact.getPerson().getId())) {
             throw new ConflictException("A primary contact already exists");
@@ -97,6 +102,9 @@ public class ContactService implements IContactService {
 
         return false;
     }
+
+
+
 
 
 
