@@ -8,6 +8,7 @@ import com.crudconJPAyHibernate.jpaDemo.Dto.Person.PersonBaseDTO;
 import com.crudconJPAyHibernate.jpaDemo.Dto.Person.PersonMapper;
 import com.crudconJPAyHibernate.jpaDemo.Dto.Person.PersonViewDTO;
 import com.crudconJPAyHibernate.jpaDemo.Dto.Person.PersonWithMembershipViewDTO;
+import com.crudconJPAyHibernate.jpaDemo.Dto.Response.ApiResponse;
 import com.crudconJPAyHibernate.jpaDemo.Model.Entity.MemberTeam;
 import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Person;
 import com.crudconJPAyHibernate.jpaDemo.Service.Contact.IContactService;
@@ -16,6 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,51 +36,67 @@ public class PersonController {
     private ContactMapper contactMapper;
 
     @GetMapping("/people")
-    public List<PersonWithMembershipViewDTO> getPeople(){
+    public ResponseEntity<Object> getPeople(){
 
-        return personService.getPeople().stream()
+        List<PersonWithMembershipViewDTO> people=  personService.getPeople().stream()
                 .map(PersonWithMembershipViewDTO::new).toList();
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("People",people));
 
     }
 
     @GetMapping("/person/{id}")
-    public PersonWithMembershipViewDTO getPerson(@PathVariable Long id){
-        return personMapper.toPersonWithMembershipViewDTO(personService.getPerson(id));
+    public ResponseEntity<Object> getPerson(@PathVariable Long id){
+        PersonWithMembershipViewDTO person = personMapper.toPersonWithMembershipViewDTO(personService.getPerson(id));
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("Person",person));
     }
 
     @PostMapping("/person/create")
-    public PersonViewDTO createPerson(@Valid @RequestBody PersonBaseDTO personBaseDTO){
+    public ResponseEntity<Object> createPerson(@Valid @RequestBody PersonBaseDTO personBaseDTO){
 
         Person person = personService.createPerson(personMapper.toEntity(personBaseDTO));
-        return personMapper.toPersonWithMembershipViewDTO(person);
+        PersonViewDTO newPerson =  personMapper.toPersonWithMembershipViewDTO(person);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("Person",newPerson));
     }
 
     @DeleteMapping("/person/delete/{id}")
-    public ResponseEntity<String> deletePerson(@PathVariable Long id){
+    public ResponseEntity<Object> deletePerson(@PathVariable Long id){
         personService.deletePerson(id);
         if (personService.existsById(id) ){
-            return ResponseEntity.ok("Person deletion failed");
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ApiResponse.failure("Person deletion failed",null));
         }
-        return ResponseEntity.ok("Delete person successfully");
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("Delete person successfully",null));
     }
 
     @PutMapping("/person/update/{id}")
-    public PersonViewDTO updatedPerson(@Valid @RequestBody PersonBaseDTO personBaseDTO,
+    public ResponseEntity<Object> updatedPerson(@Valid @RequestBody PersonBaseDTO personBaseDTO,
                                        @PathVariable Long id){
 
 
         Person person = personService.updatePerson(id,personBaseDTO);
-        return personMapper.toPersonWithMembershipViewDTO(person);
+        PersonViewDTO updatedPerson = personMapper.toPersonWithMembershipViewDTO(person);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("Person updated successfully",updatedPerson));
 
     }
 
     @GetMapping("/person/{id}/teams")
-    public List<MemberTeamViewDTO>  getTeams(@PathVariable("id") Long personId){
+    public ResponseEntity<Object> getTeams(@PathVariable("id") Long personId){
 
         List<MemberTeam> membershipList = personService.getTeams(personId);
 
-        return membershipList.stream().map(MemberTeamViewDTO::new).toList();
+        List<MemberTeamViewDTO> membershipsDto = membershipList.stream().map(MemberTeamViewDTO::new).toList();
 
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("Teams the person with ID " + personId + " belongs to",membershipsDto));
     }
 
 

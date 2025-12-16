@@ -4,24 +4,25 @@ import org.springframework.http.HttpStatus;
 
 import java.time.ZonedDateTime;
 
-public class CustomizedException {
-    private final String message;
-    private final HttpStatus status;
-    private final ZonedDateTime dateTime;
 
-    public CustomizedException(String message, HttpStatus status, ZonedDateTime dateTime) {
+public class ApiError {
+    private  String message;
+    private  String status;
+
+
+    public ApiError(String message, String status) {
         this.message = message;
         this.status = status;
-        this.dateTime = dateTime;
     }
+
+    public ApiError() {}
+
     public String getMessage() {
         return message;
     }
-    public HttpStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public ZonedDateTime getDateTime() {
-        return dateTime;
-    }
+
 }

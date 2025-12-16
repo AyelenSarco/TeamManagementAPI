@@ -1,5 +1,6 @@
 package com.crudconJPAyHibernate.jpaDemo.Dto.Contact;
 
+import com.crudconJPAyHibernate.jpaDemo.Exceptions.NotFoundException;
 import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Contact;
 import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Person;
 import com.crudconJPAyHibernate.jpaDemo.Repository.IPersonRepository;
@@ -18,7 +19,7 @@ public class ContactMapper {
         Contact contact = new Contact();
 
         Person person = personRepository.findById(idPerson)
-                .orElseThrow(() -> new RuntimeException("Person not found"));
+                .orElseThrow(() -> new NotFoundException("Person not found"));
 
         contact.setPerson(person);
         contact.setContactType(dto.getContactType());
