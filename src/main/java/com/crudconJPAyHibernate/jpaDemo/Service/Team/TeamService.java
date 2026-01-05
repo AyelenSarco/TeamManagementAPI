@@ -1,9 +1,15 @@
 package com.crudconJPAyHibernate.jpaDemo.Service.Team;
 
+import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MemberTeamMapper;
+import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MembershipBaseDTO;
+import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MembershipViewDTO;
 import com.crudconJPAyHibernate.jpaDemo.Exceptions.BadRequestException;
+import com.crudconJPAyHibernate.jpaDemo.Exceptions.NotFoundException;
 import com.crudconJPAyHibernate.jpaDemo.Model.Entity.MemberTeam;
+import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Person;
 import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Team;
 import com.crudconJPAyHibernate.jpaDemo.Repository.IMemberTeamRepository;
+import com.crudconJPAyHibernate.jpaDemo.Repository.IPersonRepository;
 import com.crudconJPAyHibernate.jpaDemo.Repository.ITeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +24,10 @@ import java.util.List;
 public class TeamService implements ITeamService {
 
     private final ITeamRepository teamRepository;
-
+    private final IPersonRepository personRepository;
     private final IMemberTeamRepository memberTeamRepository;
+    private final MemberTeamMapper memberTeamMapper;
+
     @Override
     public Team createTeam(Team team) {
         if (team.getName() == null) { throw new BadRequestException("Team name is required");}
@@ -60,14 +68,19 @@ public class TeamService implements ITeamService {
     }
 
     @Override
-    public MemberTeam addMemberToTeam(MemberTeam memberTeam) {
+    public MemberTeam addMemberToTeam(MembershipBaseDTO memberTeamDTO, Long memberId, Long teamId) {
 
-        Long personId = memberTeam.getPerson().getId();
-        Long teamId = memberTeam.getTeam().getId();
-        if (memberTeamRepository.existsByPersonIdAndTeamId(personId, teamId)) {
+        Person person = personRepository.findById(memberId)
+                .orElseThrow( () -> new NotFoundException("Person not found"));
+
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow( () -> new NotFoundException("Team not found"));
+
+        if (memberTeamRepository.existsByPersonIdAndTeamId(memberId, teamId)) {
             throw new BadRequestException("The person is already a member of this team");
         }
 
+        MemberTeam memberTeam = memberTeamMapper.toEntity(memberTeamDTO,person, team);
         return memberTeamRepository.save(memberTeam);
     }
 
