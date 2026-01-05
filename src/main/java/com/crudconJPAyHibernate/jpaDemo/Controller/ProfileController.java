@@ -40,8 +40,7 @@ public class ProfileController {
                                         @Valid @RequestBody ProfileBaseDTO profileBaseDTO){
 
 
-        Profile profile = profileMapper.toEntity(profileBaseDTO, personId);
-        ProfileViewDTO profileDTO =  profileMapper.toDto(profileService.createProfile(profile));
+        ProfileViewDTO profileDTO =  profileMapper.toDto(profileService.createProfile(profileBaseDTO,personId));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("Profile created for person with ID: " + personId + ".",profileDTO));
@@ -64,8 +63,7 @@ public class ProfileController {
                                         @Valid @RequestBody ProfileBaseDTO profileBaseDTO){
 
 
-        Profile profile = profileMapper.toEntity(profileBaseDTO, id);
-        ProfileViewDTO updatedProfileDTO =  profileMapper.toDto(profileService.updateProfile(profile));
+        ProfileViewDTO updatedProfileDTO =  profileMapper.toDto(profileService.updateProfile(profileBaseDTO,id));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("Profile updated successfully",updatedProfileDTO));

@@ -1,22 +1,16 @@
 package com.crudconJPAyHibernate.jpaDemo.Controller;
 
-import com.crudconJPAyHibernate.jpaDemo.Dto.Contact.ContactBaseDTO;
-import com.crudconJPAyHibernate.jpaDemo.Dto.Contact.ContactMapper;
 import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MemberTeamMapper;
-import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MemberTeamViewDTO;
+import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MembershipViewDTO;
 import com.crudconJPAyHibernate.jpaDemo.Dto.Person.PersonBaseDTO;
 import com.crudconJPAyHibernate.jpaDemo.Dto.Person.PersonMapper;
 import com.crudconJPAyHibernate.jpaDemo.Dto.Person.PersonViewDTO;
-import com.crudconJPAyHibernate.jpaDemo.Dto.Person.PersonWithMembershipViewDTO;
 import com.crudconJPAyHibernate.jpaDemo.Dto.Response.ApiResponse;
 import com.crudconJPAyHibernate.jpaDemo.Model.Entity.MemberTeam;
 import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Person;
-import com.crudconJPAyHibernate.jpaDemo.Service.Contact.IContactService;
 import com.crudconJPAyHibernate.jpaDemo.Service.Person.IPersonService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,16 +24,15 @@ public class PersonController {
 
     private final IPersonService personService;
 
-    @Autowired
-    private PersonMapper personMapper;
-    @Autowired
-    private ContactMapper contactMapper;
+    private final PersonMapper personMapper;
+    private final MemberTeamMapper memberTeamMapper;
+
 
     @GetMapping("/people")
     public ResponseEntity<Object> getPeople(){
 
-        List<PersonWithMembershipViewDTO> people=  personService.getPeople().stream()
-                .map(PersonWithMembershipViewDTO::new).toList();
+        List<PersonViewDTO> people=  personService.getPeople().stream()
+                .map(personMapper::toDto).toList();
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("People",people));
@@ -48,7 +41,7 @@ public class PersonController {
 
     @GetMapping("/person/{id}")
     public ResponseEntity<Object> getPerson(@PathVariable Long id){
-        PersonWithMembershipViewDTO person = personMapper.toPersonWithMembershipViewDTO(personService.getPerson(id));
+        PersonViewDTO person = personMapper.toDto(personService.getPerson(id));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("Person",person));
@@ -58,7 +51,7 @@ public class PersonController {
     public ResponseEntity<Object> createPerson(@Valid @RequestBody PersonBaseDTO personBaseDTO){
 
         Person person = personService.createPerson(personMapper.toEntity(personBaseDTO));
-        PersonViewDTO newPerson =  personMapper.toPersonWithMembershipViewDTO(person);
+        PersonViewDTO newPerson =  personMapper.toDto(person);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("Person",newPerson));
@@ -81,7 +74,7 @@ public class PersonController {
 
 
         Person person = personService.updatePerson(id,personBaseDTO);
-        PersonViewDTO updatedPerson = personMapper.toPersonWithMembershipViewDTO(person);
+        PersonViewDTO updatedPerson = personMapper.toDto(person);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("Person updated successfully",updatedPerson));
@@ -93,7 +86,9 @@ public class PersonController {
 
         List<MemberTeam> membershipList = personService.getTeams(personId);
 
-        List<MemberTeamViewDTO> membershipsDto = membershipList.stream().map(MemberTeamViewDTO::new).toList();
+        List<MembershipViewDTO> membershipsDto = membershipList.stream()
+                .map(memberTeamMapper::toDto)
+                .toList();
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("Teams the person with ID " + personId + " belongs to",membershipsDto));

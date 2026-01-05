@@ -1,25 +1,29 @@
 package com.crudconJPAyHibernate.jpaDemo.Dto.Person;
 
-import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MemberTeamViewDTO;
-import com.crudconJPAyHibernate.jpaDemo.Model.Entity.MemberTeam;
-import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Person;
-import lombok.Data;
+import com.crudconJPAyHibernate.jpaDemo.Dto.Contact.ContactBaseDTO;
+import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MembershipViewDTO;
+import jakarta.validation.Valid;
+import lombok.Builder;
 
+import java.time.LocalDate;
 import java.util.List;
 
-@Data
-public class PersonWithMembershipViewDTO extends PersonViewDTO {
+@Builder
+public class PersonWithMembershipViewDTO{
+
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private int age;
+    private String email;
+    private LocalDate birthDate;
+    private LocalDate createdAt;
+    private LocalDate updatedAt;
+    @Valid
+    private List<ContactBaseDTO> contacts;
+    @Valid
+    private List<MembershipViewDTO> membership;
 
 
-    private List<MemberTeamViewDTO> membership;
 
-
-    public PersonWithMembershipViewDTO(Person person) {
-        super(person);
-
-        if (person.getMembership() != null) {
-            this.membership = person.getMembership().stream().map(MemberTeamViewDTO::new).toList();
-        }
-
-    }
 }

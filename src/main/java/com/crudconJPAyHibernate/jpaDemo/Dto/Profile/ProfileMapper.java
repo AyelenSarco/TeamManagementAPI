@@ -5,37 +5,22 @@ import com.crudconJPAyHibernate.jpaDemo.Exceptions.BadRequestException;
 import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Person;
 import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Profile;
 import com.crudconJPAyHibernate.jpaDemo.Repository.IPersonRepository;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
-public class ProfileMapper {
+@Mapper( componentModel = "spring",
+    uses = PersonMapper.class
+)
+public interface ProfileMapper {
 
-    @Autowired
-    private IPersonRepository personRepository;
-    @Autowired
-    private PersonMapper personMapper;
+    @Mapping(target = "person", source = "person")
+    ProfileViewDTO toDto(Profile profile);
 
-    public Profile toEntity(ProfileBaseDTO dto, Long idPerson) {
-        Profile profile = new Profile();
-
-        Person person = personRepository.findById(idPerson)
-                .orElseThrow(() -> new BadRequestException("Person not found"));
+    @Mapping(target = "person", source = "person")
+    @Mapping(target ="id", ignore = true)
+    Profile toEntity(ProfileBaseDTO profileBaseDTO,Person person);
 
 
-
-        profile.setPerson(person);
-        profile.setBiography(dto.getBiography());
-        profile.setAvatarUrl(dto.getAvatarUrl());
-        profile.setNationality(dto.getNationality());
-        profile.setGender(dto.getGender());
-        profile.setLinkedinUrl(dto.getLinkedinUrl());
-
-        return profile;
-    }
-
-    public ProfileViewDTO toDto(Profile profile) {
-        return new ProfileViewDTO(profile);
-
-    }
 }

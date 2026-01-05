@@ -1,7 +1,7 @@
 package com.crudconJPAyHibernate.jpaDemo.Controller;
 
 
-import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MemberTeamBaseDTO;
+import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MembershipBaseDTO;
 import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MemberTeamMapper;
 import com.crudconJPAyHibernate.jpaDemo.Dto.Response.ApiResponse;
 import com.crudconJPAyHibernate.jpaDemo.Dto.Team.TeamBaseDTO;
@@ -12,7 +12,6 @@ import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Team;
 import com.crudconJPAyHibernate.jpaDemo.Service.Team.TeamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +35,7 @@ public class TeamController {
     @PostMapping("/team/create")
     public ResponseEntity<Object> createTeam(@Valid @RequestBody TeamBaseDTO teamDTO) {
         Team team = teamMapper.toEntity(teamDTO);
-        TeamViewDTO teamViewDTO = teamMapper.toDTO(teamService.createTeam(team));
+        TeamViewDTO teamViewDTO = teamMapper.toDto(teamService.createTeam(team));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("Team created successfully",teamViewDTO));
@@ -46,7 +45,7 @@ public class TeamController {
     @GetMapping("/teams")
     public ResponseEntity<Object> getAllTeams() {
 
-        List<TeamViewDTO> teamsDTOS = teamService.findAll().stream().map(TeamViewDTO::new).toList();
+        List<TeamViewDTO> teamsDTOS = teamService.findAll().stream().map(t -> teamMapper.toDto(t)).toList();
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("Teams",teamsDTOS));
@@ -55,7 +54,7 @@ public class TeamController {
     @GetMapping("/team/{id}")
     public ResponseEntity<Object> getTeam(@PathVariable Long id) {
 
-        TeamViewDTO teamDTO =  teamMapper.toDTO(teamService.getTeam(id));
+        TeamViewDTO teamDTO =  teamMapper.toDto(teamService.getTeam(id));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("Team",teamDTO));
@@ -80,7 +79,7 @@ public class TeamController {
 
         Team team = teamMapper.toEntity(teamDTO);
 
-        TeamViewDTO updatedTeamDTO = teamMapper.toDTO(teamService.updateTeam(team,id));
+        TeamViewDTO updatedTeamDTO = teamMapper.toDto(teamService.updateTeam(team,id));
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("Team updated successfully",updatedTeamDTO));
     }
@@ -89,11 +88,11 @@ public class TeamController {
     @PostMapping("teams/{teamId}/members/add/{memberId}")
     public ResponseEntity<Object> addMemberToTeam(@PathVariable("teamId") Long teamId,
                                        @PathVariable("memberId") long memberId,
-                                       @Valid @RequestBody MemberTeamBaseDTO memberTeamDTO) {
-        MemberTeam mt = memberTeamMapper.toEntity(memberTeamDTO,memberId, teamId);
-        teamService.addMemberToTeam(mt);
+                                       @Valid @RequestBody MembershipBaseDTO memberTeamDTO) {
 
-        TeamViewDTO teamDTO = teamMapper.toDTO(teamService.getTeam(teamId));
+        teamService.addMemberToTeam(memberTeamDTO, memberId,teamId);
+
+        TeamViewDTO teamDTO = teamMapper.toDto(teamService.getTeam(teamId));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("Member added successfully to the team",teamDTO));
@@ -101,9 +100,9 @@ public class TeamController {
 
     @PatchMapping("/teams/membership/{id}/update")
     public ResponseEntity<Object> updateMembership(@PathVariable("id") Long membershipId,
-                                                   @RequestBody MemberTeamBaseDTO mtDTO) {
+                                                   @RequestBody MembershipBaseDTO mtDTO) {
 
-        MemberTeam membership = teamService.updateMembership(membershipId, mtDTO.getRolInTeam(), mtDTO.isActive());
+        MemberTeam membership = teamService.updateMembership(membershipId, mtDTO.rolInTeam(), mtDTO.active());
 
 
         return ResponseEntity.status(HttpStatus.OK)

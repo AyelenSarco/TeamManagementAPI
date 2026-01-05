@@ -1,23 +1,28 @@
 package com.crudconJPAyHibernate.jpaDemo.Dto.Team;
 
-import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MemberTeamBaseDTO;
-import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MemberTeamViewDTO;
-import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MembersViewDTO;
+import com.crudconJPAyHibernate.jpaDemo.Dto.MemberTeam.MembershipViewDTO;
 import com.crudconJPAyHibernate.jpaDemo.Model.Entity.Team;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 
-@Data
-public class TeamViewDTO extends TeamBaseDTO {
-    private List<MembersViewDTO> members;
+@Builder
+public record TeamViewDTO  (
 
 
-    public TeamViewDTO(Team team) {
-        super(team.getName(),team.getDescription(),team.getCreatedAt(),team.getUpdatedAt());
+    @NotBlank(message = "Team name is missing")
+    String name,
+    String description,
+    LocalDate createdAt,
+    LocalDate updatedAt,
 
-        if(team.getMemberships() != null) {
-            this.members = team.getMemberships().stream().map(MembersViewDTO::new).toList();
-        }
-    }
+    @Valid
+    List<MembershipViewDTO> memberships
+
+
+){
 }
