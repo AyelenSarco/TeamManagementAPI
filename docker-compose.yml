@@ -1,0 +1,24 @@
+
+services:
+  app_team_management:
+      build: .
+      ports:
+        - "8080:8080"
+      env_file:
+        - .env.docker
+      restart: always
+      depends_on:
+        mysqldb:
+          condition: service_healthy
+
+  mysqldb:
+    image: mysql:8.0.44
+    ports:
+      - "3307:3306"
+    env_file:
+      - .env.docker
+    restart: always
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 10s
+      retries: 10
