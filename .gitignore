@@ -33,7 +33,9 @@ HELP.md
 
 ### sensitive data
 .env
+.env.docker
 .env.*
+!.env.docker.example
 !.env.example
 !*.example.env
 

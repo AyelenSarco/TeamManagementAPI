@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.tm</groupId>
-	<artifactId>team-management</artifactId>
+	<artifactId>teamManagementAPI</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>team-management</name>
 	<description>REST API for managing teams, people, profiles, contacts, and memberships</description>
