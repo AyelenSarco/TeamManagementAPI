@@ -38,9 +38,32 @@ It demonstrates solid backend practices such as:
 - Environments variables are loaded from .env
 - There are examples files in the repo you can follow: `.env.example` and `application-example.properties`
 
+# Docker
+
+The application can be run using Docker and Docker Compose, providing a fully containerized environment for both the Spring Boot API and the MySQL database.
+
+## Requirements
+- Docker
+- Docker Compose
+
+## Environment variables
+
+The Docker Compose configuration loads environment variables from the `.env.docker` file.
+
+An example file is provided in the repository as `.env.docker.example`, which can be used as a reference to create the actual environment configuration.
+
+
+## Build and run the application
+
+From the root of the project, run:
+
+```bash
+docker compose build
+docker compose up
+```
+
 # Future improvements
 - Pagination and filters
-- Add Docker support
 - Logging
 - Authentication and Authorization
 
